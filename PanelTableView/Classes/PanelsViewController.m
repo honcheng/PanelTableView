@@ -182,9 +182,16 @@
 {
 	[self.scrollView setContentSize:CGSizeMake(([self panelViewSize].width+2*GAP)*[self numberOfPanels],self.scrollView.frame.size.width)];
 	
-	PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+currentPage];
-	[panelView showNextPanel];
-	[panelView pageWillAppear];
+	for (int i=currentPage; i<[self numberOfVisiblePanels]; i++)
+	{
+		if (currentPage < [self numberOfPanels])
+		{
+			PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+i];
+			[panelView showNextPanel];
+			[panelView pageWillAppear];
+		}
+		
+	}
 }
 
 - (void)removeContentOfPage:(int)page
