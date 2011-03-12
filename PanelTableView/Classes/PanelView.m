@@ -366,4 +366,22 @@
 	return 0;
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+	if ([delegate respondsToSelector:@selector(numberOfSectionsInPanelView:)])
+	{
+		return [delegate numberOfSectionsInPanelView:self];
+	}
+	return 1;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+	if ([delegate respondsToSelector:@selector(panelView:titleForHeaderInSection:)])
+	{
+		return [delegate panelView:self titleForHeaderInSection:section];
+	}
+	return nil;
+}
+
 @end

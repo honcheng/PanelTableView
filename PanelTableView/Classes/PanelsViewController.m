@@ -353,6 +353,16 @@
 	
 }
 
+- (NSInteger)numberOfSectionsInPanelView:(PanelView*)panelView
+{
+	return 2;
+}
+
+- (NSString*)panelView:(id)panelView titleForHeaderInSection:(NSInteger)section
+{
+	return [NSString stringWithFormat:@"Section %i", section];
+}
+
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
 	return [super respondsToSelector:aSelector];
