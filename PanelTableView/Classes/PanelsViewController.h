@@ -46,9 +46,16 @@
 @property (nonatomic, retain) UIScrollView *scrollView;
 @property (nonatomic, retain) NSMutableSet *recycledPages, *visiblePages;
 
+#define GAP 10
+#define TAG_PAGE 11000
 
 - (PanelView*)dequeueReusablePageWithIdentifier:(NSString*)identifier;
 - (PanelView *)panelViewAtPage:(NSInteger)page;
+
+#pragma mark frame and sizes
+- (CGRect)scrollViewFrame;
+- (CGSize)panelViewSize;
+- (int)numberOfVisiblePanels;
 
 #pragma mark adding and removing page
 - (void)addPage;

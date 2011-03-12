@@ -45,29 +45,25 @@
 @synthesize scrollView;
 @synthesize recycledPages, visiblePages;
 
-#define GAP 10
-#define TAG_PAGE 11000
-
 - (void)loadView
 {
 	[super loadView];
 	[self.view setBackgroundColor:[UIColor blackColor]];
 	
-	self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(-1*GAP,0,[self.view bounds].size.width+2*GAP,[self.view bounds].size.height)];
+	CGRect frame = [self scrollViewFrame];
+	self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(-1*GAP,0,frame.size.width+2*GAP,frame.size.height)];
 	[self.scrollView setDelegate:self];
 	[self.scrollView setShowsHorizontalScrollIndicator:NO];
 	[self.scrollView setPagingEnabled:YES];
 	[self.scrollView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 	[self.view addSubview:self.scrollView];
 	[self.scrollView release];
-	[self.scrollView setContentSize:CGSizeMake(self.scrollView.frame.size.width*[self numberOfPanels],self.scrollView.frame.size.width)];
+	[self.scrollView setContentSize:CGSizeMake(([self panelViewSize].width+2*GAP)*[self numberOfPanels],self.scrollView.frame.size.height)];
 	
 	self.recycledPages = [NSMutableSet new];
 	self.visiblePages = [NSMutableSet new];
 	
 	[self tilePages];
-	
-	
 }
 
 
@@ -110,12 +106,42 @@
 	[panelView pageWillDisappear];
 }
 
+#pragma mark frame and sizes
+
+/*
+ Overwrite this to change size of scroll view.
+ Default implementation fills the screen
+ */
+- (CGRect)scrollViewFrame
+{
+	return CGRectMake(0,0,[self.view bounds].size.width,[self.view bounds].size.height);
+}
+
+- (CGSize)panelViewSize
+{
+	float width = [self scrollViewFrame].size.width;
+	if ([self numberOfVisiblePanels]>1)
+	{
+		width = ([self scrollViewFrame].size.width-2*GAP*([self numberOfVisiblePanels]-1))/[self numberOfVisiblePanels];
+	}
+	
+	return CGSizeMake(width,[self scrollViewFrame].size.height);
+}
+
+/*
+ Overwrite this to change number of visible panel views
+ */
+- (int)numberOfVisiblePanels
+{
+	return 1;
+}
+
 #pragma mark adding and removing panels
 
 - (void)addPage
 {
 	//numberOfPages += 1;
-	[self.scrollView setContentSize:CGSizeMake(self.scrollView.frame.size.width*[self numberOfPanels],self.scrollView.frame.size.width)];
+	[self.scrollView setContentSize:CGSizeMake(([self panelViewSize].width+2*GAP)*[self numberOfPanels],self.scrollView.frame.size.width)];
 }
 
 - (void)removeCurrentPage
@@ -149,12 +175,12 @@
 
 - (void)jumpToPreviousPage
 {
-	[self.scrollView setContentSize:CGSizeMake(self.scrollView.frame.size.width*[self numberOfPanels],self.scrollView.frame.size.width)];
+	[self.scrollView setContentSize:CGSizeMake(([self panelViewSize].width+2*GAP)*[self numberOfPanels],self.scrollView.frame.size.width)];
 }
 
 - (void)pushNextPage
 {
-	[self.scrollView setContentSize:CGSizeMake(self.scrollView.frame.size.width*[self numberOfPanels],self.scrollView.frame.size.width)];
+	[self.scrollView setContentSize:CGSizeMake(([self panelViewSize].width+2*GAP)*[self numberOfPanels],self.scrollView.frame.size.width)];
 	
 	PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+currentPage];
 	[panelView showNextPanel];
@@ -197,10 +223,14 @@
 - (void)tilePages
 {
 	CGRect visibleBounds = [self.scrollView bounds];
-	int firstNeededPageIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds));
-	int lastNeededPageIndex = floorf((CGRectGetMaxX(visibleBounds)-1) / CGRectGetWidth(visibleBounds));
+	int firstNeededPageIndex = floorf(CGRectGetMinX(visibleBounds) / CGRectGetWidth(visibleBounds)) * [self numberOfVisiblePanels];
+	int lastNeededPageIndex = floorf((CGRectGetMaxX(visibleBounds)-1) / CGRectGetWidth(visibleBounds)) * [self numberOfVisiblePanels];
+
 	firstNeededPageIndex = MAX(firstNeededPageIndex,0);
-	lastNeededPageIndex = MIN(lastNeededPageIndex, [self numberOfPanels]-1);
+	lastNeededPageIndex = MIN(lastNeededPageIndex, [self numberOfPanels]-1) + [self numberOfVisiblePanels];
+	
+	if (firstNeededPageIndex<0) firstNeededPageIndex == 0;
+	if (lastNeededPageIndex>=[self numberOfPanels]) lastNeededPageIndex = [self numberOfPanels]-1;
 	
 	currentPage = firstNeededPageIndex;
 	
@@ -219,8 +249,8 @@
 		if (![self isDisplayingPageForIndex:index])
 		{
 			PanelView *panel = [self panelForPage:index];
-			int x = ([self.view bounds].size.width+2*GAP)*index + GAP;
-			CGRect panelFrame = CGRectMake(x,0,[self.view bounds].size.width,[self.view bounds].size.height);
+			int x = ([self panelViewSize].width+2*GAP)*index + GAP;
+			CGRect panelFrame = CGRectMake(x,0,[self panelViewSize].width,[self scrollViewFrame].size.height);
 			
 			[panel setFrame:panelFrame];
 			[panel setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];

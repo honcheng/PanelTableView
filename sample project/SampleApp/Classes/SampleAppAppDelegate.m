@@ -8,6 +8,7 @@
 
 #import "SampleAppAppDelegate.h"
 #import "SamplePanelsViewController.h"
+#import "SamplePanelsViewControllerForiPad.h"
 
 @implementation SampleAppAppDelegate
 
@@ -19,7 +20,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
-	SamplePanelsViewController *panelsViewController = [[SamplePanelsViewController alloc] init];
+	id panelsViewController = nil;
+	if ([[UIDevice currentDevice] userInterfaceIdiom]==UIUserInterfaceIdiomPhone)
+	{
+		panelsViewController = [[SamplePanelsViewController alloc] init];
+	}
+	else if ([[UIDevice currentDevice] userInterfaceIdiom]==UIUserInterfaceIdiomPad)
+	{
+		panelsViewController = [[SamplePanelsViewControllerForiPad alloc] init];
+	}
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:panelsViewController];
 	[[navController navigationBar] setBarStyle:UIBarStyleBlackTranslucent];
 	[window addSubview:navController.view];
