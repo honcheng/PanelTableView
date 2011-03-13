@@ -59,26 +59,50 @@
 // this method is used to insert add/delete button to show the demonstrate the add/delete function
 - (void)addTemporaryUI
 {
-	UIBarButtonItem *addItem = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStyleBordered target:self action:@selector(onAddButtonPressed:)];
-	UIBarButtonItem *deleteItem = [[UIBarButtonItem alloc] initWithTitle:@"Delete" style:UIBarButtonItemStyleBordered target:self action:@selector(onDeleteButtonPressed:)];
+	editItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(onEditButtonPressed:)];
+	doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(onDoneButtonPressed:)];
+	[self.navigationItem setRightBarButtonItem:editItem];
 	
-	[self.navigationItem setLeftBarButtonItem:deleteItem];
-	[self.navigationItem setRightBarButtonItem:addItem];
-	[deleteItem release];
-	[addItem release];
+	UISegmentedControl *segmentControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"+",@"-",nil]];
+	[segmentControl setFrame:CGRectMake(0,0,60,30)];
+	[segmentControl setMomentary:YES];
+	[segmentControl setSegmentedControlStyle:UISegmentedControlStyleBar];
+	addRemoveItem = [[UIBarButtonItem alloc] initWithCustomView:segmentControl];
+	[segmentControl release];
+	[self.navigationItem setLeftBarButtonItem:addRemoveItem];
+	[segmentControl addTarget:self action:@selector(onSegmentControlValueChanged:) forControlEvents:UIControlEventValueChanged];
+	
+	
 }
 
-- (void)onAddButtonPressed:(id)sender
+- (void)onDoneButtonPressed:(id)sender
 {
-	[self.panelsArray addObject:[NSMutableArray arrayWithObjects:@"",@"",@"",nil]];
-	[self addPage];
+	[self.navigationItem setRightBarButtonItem:editItem];
+	[self.navigationItem setLeftBarButtonItem:addRemoveItem animated:YES];
+	[self setEditing:NO];
 }
 
-- (void)onDeleteButtonPressed:(id)sender
+- (void)onEditButtonPressed:(id)sender
 {
-	[self.panelsArray removeObjectAtIndex:currentPage];
-	[self removeCurrentPage];
+	[self.navigationItem setRightBarButtonItem:doneItem];
+	[self.navigationItem setLeftBarButtonItem:nil animated:YES];
+	[self setEditing:YES];
 }
+
+- (void)onSegmentControlValueChanged:(id)sender
+{
+	if ([sender selectedSegmentIndex]==0)
+	{
+		[self.panelsArray addObject:[NSMutableArray arrayWithObjects:@"",@"",@"",nil]];
+		[self addPage];
+	}
+	else
+	{
+		[self.panelsArray removeObjectAtIndex:currentPage];
+		[self removeCurrentPage];
+	}
+}
+
 
 #pragma mark panel views delegate/datasource
 

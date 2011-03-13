@@ -33,6 +33,7 @@
 
 #import <UIKit/UIKit.h>
 #import "PanelIndexPath.h"
+#import <QuartzCore/QuartzCore.h>
 
 @protocol PanelViewDelegate
 - (NSInteger)panelView:(id)panelView numberOfRowsInPage:(NSInteger)page section:(NSInteger)section;
@@ -63,6 +64,7 @@
 - (void)pageWillDisappear;
 - (CGAffineTransform)transformForOrientation;
 - (void)showPanel:(BOOL)show animated:(BOOL)animated;
+- (void)shouldWiggle:(BOOL)wiggle;
 
 #pragma mark offset save/restore
 - (void)saveTableviewOffset;

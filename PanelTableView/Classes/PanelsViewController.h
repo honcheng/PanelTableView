@@ -35,15 +35,24 @@
 #import "PanelIndexPath.h"
 #import "PanelView.h"
 
+@interface UIScrollViewExt : UIScrollView
+{
+	BOOL isEditing;
+}
+@property (nonatomic, assign) BOOL isEditing;
+@end
+
+
 @interface PanelsViewController : UIViewController <UIScrollViewDelegate, PanelViewDelegate>{
-	UIScrollView *scrollView;
+	UIScrollViewExt *scrollView;
 	NSMutableSet *recycledPages;
 	NSMutableSet *visiblePages;
 	int currentPage;
 	int lastDisplayedPage;
+	BOOL _isEditing;
 }
 
-@property (nonatomic, retain) UIScrollView *scrollView;
+@property (nonatomic, retain) UIScrollViewExt *scrollView;
 @property (nonatomic, retain) NSMutableSet *recycledPages, *visiblePages;
 
 #define GAP 10
@@ -51,6 +60,10 @@
 
 - (PanelView*)dequeueReusablePageWithIdentifier:(NSString*)identifier;
 - (PanelView *)panelViewAtPage:(NSInteger)page;
+
+#pragma mark editing
+- (void)setEditing:(BOOL)isEditing;
+- (void)shouldWiggle:(BOOL)wiggle;
 
 #pragma mark frame and sizes
 - (CGRect)scrollViewFrame;

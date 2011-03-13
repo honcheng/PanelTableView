@@ -188,6 +188,25 @@
 
 #pragma mark animation
 
+- (void)shouldWiggle:(BOOL)wiggle
+{
+	if (wiggle)
+	{
+		[UIView beginAnimations:nil context:nil];
+		[UIView setAnimationDuration:0.1];
+		[UIView setAnimationRepeatAutoreverses:YES];
+		[UIView setAnimationRepeatCount:10000];
+		[self setTransform:CGAffineTransformMakeRotation(1*M_PI/180.0)];
+		[self setTransform:CGAffineTransformMakeRotation(-1*M_PI/180.0)];
+		[UIView commitAnimations];
+	}
+	else
+	{
+		[self setTransform:CGAffineTransformMakeRotation(0)];
+		[self.layer removeAllAnimations];
+	}
+}
+
 #define kTransitionDuration	0.4
 
 - (void)showNextPanel

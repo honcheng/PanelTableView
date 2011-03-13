@@ -33,6 +33,15 @@
 
 #import "PanelsViewController.h"
 
+@implementation UIScrollViewExt
+@synthesize isEditing;
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+	if (isEditing) return self;
+	else return [super hitTest:point withEvent:event];
+}
+@end
+
 
 @interface PanelsViewController()
 - (void)tilePages;
@@ -51,7 +60,7 @@
 	[self.view setBackgroundColor:[UIColor blackColor]];
 	
 	CGRect frame = [self scrollViewFrame];
-	self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(-1*GAP,0,frame.size.width+2*GAP,frame.size.height)];
+	self.scrollView = [[UIScrollViewExt alloc] initWithFrame:CGRectMake(-1*GAP,0,frame.size.width+2*GAP,frame.size.height)];
 	[self.scrollView setDelegate:self];
 	[self.scrollView setShowsHorizontalScrollIndicator:NO];
 	[self.scrollView setPagingEnabled:YES];
@@ -104,6 +113,48 @@
 {
 	PanelView *panelView = [self panelViewAtPage:currentPage];
 	[panelView pageWillDisappear];
+}
+
+#pragma mark editing
+
+- (void)shouldWiggle:(BOOL)wiggle
+{
+	for (int i=0; i<[self numberOfPanels]; i++)
+	{
+		PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+i];
+		[panelView shouldWiggle:wiggle];
+		
+	}
+}
+
+- (void)setEditing:(BOOL)isEditing
+{
+	_isEditing = isEditing;
+	
+	[UIView beginAnimations:nil context:nil];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+	[UIView setAnimationDuration:0.2];
+	[self.scrollView setIsEditing:isEditing];
+	[self shouldWiggle:isEditing];
+	if (isEditing)
+	{
+		[self.scrollView setTransform:CGAffineTransformMakeScale(0.5, 0.5)];
+		[self.scrollView setClipsToBounds:NO];
+	}
+	else 
+	{
+		[UIView setAnimationDelegate:self];
+		[UIView setAnimationDidStopSelector:@selector(onEditingAnimationStopped)];
+		[self.scrollView setTransform:CGAffineTransformMakeScale(1, 1)];
+		
+	}
+
+	[UIView commitAnimations];
+}
+
+- (void)onEditingAnimationStopped
+{
+	[self.scrollView setClipsToBounds:YES];
 }
 
 #pragma mark frame and sizes
@@ -236,7 +287,9 @@
 	firstNeededPageIndex = MAX(firstNeededPageIndex,0);
 	lastNeededPageIndex = MIN(lastNeededPageIndex, [self numberOfPanels]-1) + [self numberOfVisiblePanels];
 	
-	if (firstNeededPageIndex<0) firstNeededPageIndex == 0;
+	if (_isEditing) firstNeededPageIndex -= 1;
+	
+	if (firstNeededPageIndex<0) firstNeededPageIndex = 0;
 	if (lastNeededPageIndex>=[self numberOfPanels]) lastNeededPageIndex = [self numberOfPanels]-1;
 	
 	currentPage = firstNeededPageIndex;
@@ -247,6 +300,7 @@
 		{
 			[self.recycledPages addObject:panel];
 			[panel removeFromSuperview];
+			[panel shouldWiggle:NO];
 		}
 	}
 	[self.visiblePages minusSet:self.recycledPages];
@@ -268,6 +322,7 @@
 
 			[self.scrollView addSubview:panel];
 			[self.visiblePages addObject:panel];
+			[panel shouldWiggle:_isEditing];
 		}
 	}
 }

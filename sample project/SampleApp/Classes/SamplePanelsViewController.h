@@ -11,6 +11,7 @@
 
 @interface SamplePanelsViewController : PanelsViewController {
 	NSMutableArray *panelsArray;
+	UIBarButtonItem *editItem, *doneItem, *addRemoveItem;
 }
 
 @property (nonatomic, retain) NSMutableArray *panelsArray;
