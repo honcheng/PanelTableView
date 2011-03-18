@@ -387,18 +387,18 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	if ([delegate respondsToSelector:@selector(numberOfSectionsInPanelView:)])
+	if ([delegate respondsToSelector:@selector(panelView:numberOfSectionsInPage:)])
 	{
-		return [delegate numberOfSectionsInPanelView:self];
+		return [delegate panelView:self numberOfSectionsInPage:self.pageNumber];
 	}
 	return 1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-	if ([delegate respondsToSelector:@selector(panelView:titleForHeaderInSection:)])
+	if ([delegate respondsToSelector:@selector(panelView:titleForHeaderInPage:section:)])
 	{
-		return [delegate panelView:self titleForHeaderInSection:section];
+		return [delegate panelView:self titleForHeaderInPage:self.pageNumber section:section];
 	}
 	return nil;
 }

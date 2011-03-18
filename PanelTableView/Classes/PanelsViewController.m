@@ -408,14 +408,14 @@
 	
 }
 
-- (NSInteger)numberOfSectionsInPanelView:(PanelView*)panelView
+- (NSInteger)panelView:(id)panelView numberOfSectionsInPage:(NSInteger)pageNumber
 {
 	return 2;
 }
 
-- (NSString*)panelView:(id)panelView titleForHeaderInSection:(NSInteger)section
+- (NSString*)panelView:(id)panelView titleForHeaderInPage:(NSInteger)pageNumber section:(NSInteger)section
 {
-	return [NSString stringWithFormat:@"Section %i", section];
+	return [NSString stringWithFormat:@"Page %i Section %i", pageNumber, section];
 }
 
 - (BOOL)respondsToSelector:(SEL)aSelector
