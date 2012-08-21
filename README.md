@@ -1,6 +1,10 @@
 #PanelTableView for iOS
 Creates a UIViewController with multiple UITableView in a UIScrollView
 
+<img src="https://github.com/honcheng/PanelTableView/raw/master/blog-resources/plan.png"/>   
+
+<img src="http://www.honcheng.com/imagehost/i/img?id=aghob25jaGVuZ3IOCxIFSW1hZ2UYyuX9AQw"/>
+
 Features
 --------
 * recycle views efficiently
