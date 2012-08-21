@@ -57,7 +57,7 @@
 	doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(onDoneButtonPressed:)];
 	[self.navigationItem setRightBarButtonItem:editItem];
 	
-	UISegmentedControl *segmentControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"+",@"-",nil]];
+	UISegmentedControl *segmentControl = [[UISegmentedControl alloc] initWithItems:@[@"+",@"-"]];
 	[segmentControl setFrame:CGRectMake(0,0,60,30)];
 	[segmentControl setMomentary:YES];
 	[segmentControl setSegmentedControlStyle:UISegmentedControlStyleBar];

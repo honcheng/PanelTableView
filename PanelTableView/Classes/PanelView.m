@@ -119,7 +119,7 @@
 	
 	if ([offsetArray count]<pageNumber+1)
 	{
-		[offsetArray addObject:[NSNumber numberWithFloat:y]];
+		[offsetArray addObject:@(y)];
 	}
 	else
 	{
