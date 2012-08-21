@@ -51,7 +51,6 @@
 		
 		self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0,0,frame.size.width,frame.size.height)];
 		[self addSubview:self.tableView];
-		[self.tableView release];
 		[self.tableView setDelegate:self];
 		[self.tableView setDataSource:self];
     }
@@ -101,13 +100,6 @@
 - (void)pageWillDisappear
 {
 	[self saveTableviewOffset];
-}
-
-- (void)dealloc 
-{
-	[self.identifier release];
-	[self.tableView release];
-    [super dealloc];
 }
 
 #pragma mark offset save/restore

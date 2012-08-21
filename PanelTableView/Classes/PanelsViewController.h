@@ -52,8 +52,8 @@
 	BOOL _isEditing;
 }
 
-@property (nonatomic, retain) UIScrollViewExt *scrollView;
-@property (nonatomic, retain) NSMutableSet *recycledPages, *visiblePages;
+@property (nonatomic, strong) UIScrollViewExt *scrollView;
+@property (nonatomic, strong) NSMutableSet *recycledPages, *visiblePages;
 
 #define GAP 10
 #define TAG_PAGE 11000

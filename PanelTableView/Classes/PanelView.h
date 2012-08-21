@@ -35,12 +35,11 @@
 #import "PanelIndexPath.h"
 #import <QuartzCore/QuartzCore.h>
 
-@protocol PanelViewDelegate
+@protocol PanelViewDelegate <NSObject>
 - (NSInteger)panelView:(id)panelView numberOfRowsInPage:(NSInteger)page section:(NSInteger)section;
 - (UITableViewCell *)panelView:(id)panelView cellForRowAtIndexPath:(PanelIndexPath *)indexPath;
 - (void)panelView:(id)panelView didSelectRowAtIndexPath:(PanelIndexPath *)indexPath;
 - (CGFloat)panelView:(id)panelView heightForRowAtIndexPath:(PanelIndexPath *)indexPath;
-- (BOOL)respondsToSelector:(SEL)selector;
 - (NSInteger)panelView:(id)panelView numberOfSectionsInPage:(NSInteger)pageNumber;
 - (NSString*)panelView:(id)panelView titleForHeaderInPage:(NSInteger)pageNumber section:(NSInteger)section;
 @end
@@ -48,14 +47,14 @@
 @interface PanelView : UIView <UITableViewDelegate, UITableViewDataSource>{
 	int pageNumber;
 	UITableView *tableView;
-	id<PanelViewDelegate> delegate;
+	id<PanelViewDelegate> __unsafe_unretained delegate;
 	NSString *identifier;
 }
 
 @property (nonatomic, assign) int pageNumber;
-@property (nonatomic, retain) UITableView *tableView;
-@property (nonatomic, assign) id<PanelViewDelegate> delegate;
-@property (nonatomic, retain) NSString *identifier;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, unsafe_unretained) id<PanelViewDelegate> delegate;
+@property (nonatomic, strong) NSString *identifier;
 
 - (id)initWithIdentifier:(NSString*)_identifier;
 - (void)reset;

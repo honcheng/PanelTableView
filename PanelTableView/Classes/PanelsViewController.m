@@ -51,7 +51,6 @@
 @end
 
 @implementation PanelsViewController
-@synthesize scrollView;
 @synthesize recycledPages, visiblePages;
 
 - (void)loadView
@@ -60,17 +59,16 @@
 	[self.view setBackgroundColor:[UIColor blackColor]];
 	
 	CGRect frame = [self scrollViewFrame];
-	self.scrollView = [[UIScrollViewExt alloc] initWithFrame:CGRectMake(-1*GAP,0,frame.size.width+2*GAP,frame.size.height)];
-	[self.scrollView setDelegate:self];
-	[self.scrollView setShowsHorizontalScrollIndicator:NO];
-	[self.scrollView setPagingEnabled:YES];
-	[self.scrollView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+	_scrollView = [[UIScrollViewExt alloc] initWithFrame:CGRectMake(-1*GAP,0,frame.size.width+2*GAP,frame.size.height)];
+	[_scrollView setDelegate:self];
+	[_scrollView setShowsHorizontalScrollIndicator:NO];
+	[_scrollView setPagingEnabled:YES];
+	[_scrollView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 	[self.view addSubview:self.scrollView];
-	[self.scrollView release];
-	[self.scrollView setContentSize:CGSizeMake(([self panelViewSize].width+2*GAP)*[self numberOfPanels],self.scrollView.frame.size.height)];
+	[_scrollView setContentSize:CGSizeMake(([self panelViewSize].width+2*GAP)*[self numberOfPanels],_scrollView.frame.size.height)];
 	
-	self.recycledPages = [NSMutableSet new];
-	self.visiblePages = [NSMutableSet new];
+	self.recycledPages = [NSMutableSet set];
+	self.visiblePages = [NSMutableSet set];
 	
 	[self tilePages];
 }
@@ -87,14 +85,6 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-}
-
-- (void)dealloc 
-{
-	[self.scrollView release];
-	[self.recycledPages release];
-	[self.visiblePages release];
-    [super dealloc];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -352,7 +342,7 @@
 	PanelView *page = [filteredSet anyObject];
 	if (page)
 	{
-		[[page retain] autorelease];
+		//[[page retain] autorelease];
 		[self.recycledPages removeObject:page];
 	}
 	return page;
@@ -372,7 +362,7 @@
 	PanelView *panelView = (PanelView*)[self dequeueReusablePageWithIdentifier:identifier];
 	if (panelView == nil)
 	{
-		panelView = [[[PanelView alloc] initWithIdentifier:identifier] autorelease];
+		panelView = [[PanelView alloc] initWithIdentifier:identifier];
 	}
 	return panelView;
 }
@@ -393,7 +383,7 @@
 	UITableViewCell *cell = (UITableViewCell*)[panelView.tableView dequeueReusableCellWithIdentifier:identity];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identity] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identity];
 	}
 	return cell;
 }
@@ -416,11 +406,6 @@
 - (NSString*)panelView:(id)panelView titleForHeaderInPage:(NSInteger)pageNumber section:(NSInteger)section
 {
 	return [NSString stringWithFormat:@"Page %i Section %i", pageNumber, section];
-}
-
-- (BOOL)respondsToSelector:(SEL)aSelector
-{
-	return [super respondsToSelector:aSelector];
 }
 
 

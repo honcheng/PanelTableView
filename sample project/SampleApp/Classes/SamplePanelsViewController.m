@@ -48,12 +48,6 @@
     // e.g. self.myOutlet = nil;
 }
 
-
-- (void)dealloc {
-	[self.panelsArray release];
-    [super dealloc];
-}
-
 #pragma mark temporary
 
 // this method is used to insert add/delete button to show the demonstrate the add/delete function
@@ -68,7 +62,6 @@
 	[segmentControl setMomentary:YES];
 	[segmentControl setSegmentedControlStyle:UISegmentedControlStyleBar];
 	addRemoveItem = [[UIBarButtonItem alloc] initWithCustomView:segmentControl];
-	[segmentControl release];
 	[self.navigationItem setLeftBarButtonItem:addRemoveItem];
 	[segmentControl addTarget:self action:@selector(onSegmentControlValueChanged:) forControlEvents:UIControlEventValueChanged];
 	
@@ -144,7 +137,7 @@
 	UITableViewCell *cell = (UITableViewCell*)[panelView.tableView dequeueReusableCellWithIdentifier:identity];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identity] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identity];
 	}
 	[[cell textLabel] setText:[NSString stringWithFormat:@"panel %i section %i row %i", indexPath.page, indexPath.section, indexPath.row+1]];
 	return cell;
@@ -174,7 +167,7 @@
 	SamplePanelView *panelView = (SamplePanelView*)[self dequeueReusablePageWithIdentifier:identifier];
 	if (panelView == nil)
 	{
-		panelView = [[[SamplePanelView alloc] initWithIdentifier:identifier] autorelease];
+		panelView = [[SamplePanelView alloc] initWithIdentifier:identifier];
 	}
 	return panelView;
 }

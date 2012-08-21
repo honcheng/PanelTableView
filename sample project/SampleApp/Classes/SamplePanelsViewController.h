@@ -14,7 +14,7 @@
 	UIBarButtonItem *editItem, *doneItem, *addRemoveItem;
 }
 
-@property (nonatomic, retain) NSMutableArray *panelsArray;
+@property (nonatomic, strong) NSMutableArray *panelsArray;
 
 - (void)addTemporaryUI;
 

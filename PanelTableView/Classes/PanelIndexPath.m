@@ -50,12 +50,12 @@
 
 + (id)panelIndexPathForRow:(int)_row section:(int)_section page:(int)_page
 {
-	return [[[self alloc] initWithRow:_row section:_section page:_page] autorelease];
+	return [[self alloc] initWithRow:_row section:_section page:_page];
 }
 
 + (id)panelIndexPathForPage:(int)_page indexPath:(NSIndexPath*)indexPath
 {
-	return [[[self alloc] initWithRow:indexPath.row section:indexPath.section page:_page] autorelease];
+	return [[self alloc] initWithRow:indexPath.row section:indexPath.section page:_page];
 }
 
 @end

@@ -31,7 +31,7 @@
 	}
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:panelsViewController];
 	[[navController navigationBar] setBarStyle:UIBarStyleBlackTranslucent];
-	[window addSubview:navController.view];
+	[window setRootViewController:navController];
     
     [self.window makeKeyAndVisible];
     
@@ -87,10 +87,6 @@
 }
 
 
-- (void)dealloc {
-    [window release];
-    [super dealloc];
-}
 
 
 @end
