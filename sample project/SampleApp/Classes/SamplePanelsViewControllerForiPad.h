@@ -9,8 +9,5 @@
 #import <UIKit/UIKit.h>
 #import "SamplePanelsViewController.h"
 
-@interface SamplePanelsViewControllerForiPad : SamplePanelsViewController {
-
-}
-
+@interface SamplePanelsViewControllerForiPad : SamplePanelsViewController 
 @end

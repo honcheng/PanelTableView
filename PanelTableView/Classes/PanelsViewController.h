@@ -36,24 +36,15 @@
 #import "PanelView.h"
 
 @interface UIScrollViewExt : UIScrollView
-{
-	BOOL isEditing;
-}
 @property (nonatomic, assign) BOOL isEditing;
 @end
 
 
-@interface PanelsViewController : UIViewController <UIScrollViewDelegate, PanelViewDelegate>{
-	UIScrollViewExt *scrollView;
-	NSMutableSet *recycledPages;
-	NSMutableSet *visiblePages;
-	int currentPage;
-	int lastDisplayedPage;
-	BOOL _isEditing;
-}
-
+@interface PanelsViewController : UIViewController <UIScrollViewDelegate, PanelViewDelegate>
 @property (nonatomic, strong) UIScrollViewExt *scrollView;
 @property (nonatomic, strong) NSMutableSet *recycledPages, *visiblePages;
+@property (nonatomic, assign) int currentPage, lastDisplayedPage;
+@property (nonatomic, assign) BOOL isEditing;
 
 #define GAP 10
 #define TAG_PAGE 11000

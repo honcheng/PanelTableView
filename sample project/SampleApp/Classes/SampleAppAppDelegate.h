@@ -8,10 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SampleAppAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-}
-
+@interface SampleAppAppDelegate : NSObject <UIApplicationDelegate> 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 
 

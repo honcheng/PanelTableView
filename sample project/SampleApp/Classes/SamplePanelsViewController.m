@@ -10,13 +10,12 @@
 #import "SamplePanelView.h"
 
 @implementation SamplePanelsViewController
-@synthesize panelsArray;
 
 - (id)init
 {
 	if (self = [super init])
 	{
-		self.panelsArray = [NSMutableArray new];
+		_panelsArray = [NSMutableArray new];
 		int numberOfPanels = 10;
 		for (int i=0; i<numberOfPanels; i++)
 		{
@@ -53,16 +52,16 @@
 // this method is used to insert add/delete button to show the demonstrate the add/delete function
 - (void)addTemporaryUI
 {
-	editItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(onEditButtonPressed:)];
-	doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(onDoneButtonPressed:)];
-	[self.navigationItem setRightBarButtonItem:editItem];
+	self.editItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(onEditButtonPressed:)];
+	self.editItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(onDoneButtonPressed:)];
+	[self.navigationItem setRightBarButtonItem:self.editItem];
 	
 	UISegmentedControl *segmentControl = [[UISegmentedControl alloc] initWithItems:@[@"+",@"-"]];
 	[segmentControl setFrame:CGRectMake(0,0,60,30)];
 	[segmentControl setMomentary:YES];
 	[segmentControl setSegmentedControlStyle:UISegmentedControlStyleBar];
-	addRemoveItem = [[UIBarButtonItem alloc] initWithCustomView:segmentControl];
-	[self.navigationItem setLeftBarButtonItem:addRemoveItem];
+	self.addRemoveItem = [[UIBarButtonItem alloc] initWithCustomView:segmentControl];
+	[self.navigationItem setLeftBarButtonItem:self.addRemoveItem];
 	[segmentControl addTarget:self action:@selector(onSegmentControlValueChanged:) forControlEvents:UIControlEventValueChanged];
 	
 	
@@ -70,14 +69,14 @@
 
 - (void)onDoneButtonPressed:(id)sender
 {
-	[self.navigationItem setRightBarButtonItem:editItem];
-	[self.navigationItem setLeftBarButtonItem:addRemoveItem animated:YES];
+	[self.navigationItem setRightBarButtonItem:self.editItem];
+	[self.navigationItem setLeftBarButtonItem:self.addRemoveItem animated:YES];
 	[self setEditing:NO];
 }
 
 - (void)onEditButtonPressed:(id)sender
 {
-	[self.navigationItem setRightBarButtonItem:doneItem];
+	[self.navigationItem setRightBarButtonItem:self.editItem];
 	[self.navigationItem setLeftBarButtonItem:nil animated:YES];
 	[self setEditing:YES];
 }
@@ -91,7 +90,7 @@
 	}
 	else
 	{
-		[self.panelsArray removeObjectAtIndex:currentPage];
+		[self.panelsArray removeObjectAtIndex:self.currentPage];
 		[self removeCurrentPage];
 	}
 }

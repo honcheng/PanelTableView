@@ -9,8 +9,5 @@
 #import <UIKit/UIKit.h>
 #import "PanelView.h"
 
-@interface SamplePanelView : PanelView {
-
-}
-
+@interface SamplePanelView : PanelView 
 @end

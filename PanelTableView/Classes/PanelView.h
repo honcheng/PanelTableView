@@ -44,17 +44,11 @@
 - (NSString*)panelView:(id)panelView titleForHeaderInPage:(NSInteger)pageNumber section:(NSInteger)section;
 @end
 
-@interface PanelView : UIView <UITableViewDelegate, UITableViewDataSource>{
-	int pageNumber;
-	UITableView *tableView;
-	id<PanelViewDelegate> __unsafe_unretained delegate;
-	NSString *identifier;
-}
-
+@interface PanelView : UIView <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, assign) int pageNumber;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, unsafe_unretained) id<PanelViewDelegate> delegate;
-@property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, copy) NSString *identifier;
 
 - (id)initWithIdentifier:(NSString*)_identifier;
 - (void)reset;

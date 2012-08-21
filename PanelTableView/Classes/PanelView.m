@@ -38,10 +38,6 @@
 @end
 
 @implementation PanelView
-@synthesize pageNumber;
-@synthesize tableView;
-@synthesize delegate;
-@synthesize identifier;
 
 - (id)initWithFrame:(CGRect)frame 
 {
@@ -49,27 +45,26 @@
 	{
 		[self setBackgroundColor:[UIColor whiteColor]];
 		
-		self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0,0,frame.size.width,frame.size.height)];
-		[self addSubview:self.tableView];
-		[self.tableView setDelegate:self];
-		[self.tableView setDataSource:self];
+		_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0,0,frame.size.width,frame.size.height)];
+		[self addSubview:_tableView];
+		[_tableView setDelegate:self];
+		[_tableView setDataSource:self];
     }
     return self;
 }
 
-- (id)initWithIdentifier:(NSString*)_identifier
+- (id)initWithIdentifier:(NSString*)identifier
 {
 	if (self = [super init])
 	{
-		//NSLog(@".... init with identifier");
-		self.identifier = _identifier;
+		_identifier = identifier;
 	}
 	return self;
 }
 
-- (void)setFrame:(CGRect)frame_
+- (void)setFrame:(CGRect)frame
 {
-	[super setFrame:frame_];
+	[super setFrame:frame];
 	
 	CGRect tableViewFrame = [self.tableView frame];
 	tableViewFrame.size.width = self.frame.size.width;
@@ -79,14 +74,11 @@
 
 - (void)reset
 {
-	//NSLog(@"reset page %i", pageNumber);
+
 }
 
 - (void)pageWillAppear
 {
-	//NSLog(@"page will appear %i", pageNumber);
-	//[self showPanel:YES animated:YES];
-	//[self removePanelWithAnimation:YES];
 	[self.tableView reloadData];
 	[self restoreTableviewOffset];
 }
@@ -117,13 +109,13 @@
 		offsetArray = [NSMutableArray array];
 	}
 	
-	if ([offsetArray count]<pageNumber+1)
+	if ([offsetArray count]<self.pageNumber+1)
 	{
 		[offsetArray addObject:@(y)];
 	}
 	else
 	{
-		[offsetArray replaceObjectAtIndex:pageNumber withObject:[NSNumber numberWithInt:y]];
+		[offsetArray replaceObjectAtIndex:self.pageNumber withObject:[NSNumber numberWithInt:y]];
 	}
 	
 	[[NSUserDefaults standardUserDefaults] setObject:offsetArray forKey:kTableOffset];
@@ -136,9 +128,9 @@
 	NSMutableArray *offsetArray = [[NSUserDefaults standardUserDefaults] objectForKey:kTableOffset];
 	if (offsetArray)
 	{
-		if ([offsetArray count]>pageNumber)
+		if ([offsetArray count]>self.pageNumber)
 		{
-			float y = [[offsetArray objectAtIndex:pageNumber] floatValue];
+			float y = [[offsetArray objectAtIndex:self.pageNumber] floatValue];
 			CGPoint contentOffset = CGPointMake(0, y);
 			[self.tableView setContentOffset:contentOffset animated:NO];
 		}
@@ -150,10 +142,10 @@
 	NSMutableArray *offsetArray = [[[NSUserDefaults standardUserDefaults] objectForKey:kTableOffset] mutableCopy];
 	if (offsetArray)
 	{
-		if ([offsetArray count]>pageNumber)
+		if ([offsetArray count]>self.pageNumber)
 		{
 			
-			[offsetArray removeObjectAtIndex:pageNumber];
+			[offsetArray removeObjectAtIndex:self.pageNumber];
 			[[NSUserDefaults standardUserDefaults] setObject:offsetArray forKey:kTableOffset];
 		}
 	}
@@ -344,53 +336,53 @@
 
 - (CGFloat)tableView:(UITableView *)tableView_ heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if ([delegate respondsToSelector:@selector(panelView:heightForRowAtIndexPath:)])
+	if ([self.delegate respondsToSelector:@selector(panelView:heightForRowAtIndexPath:)])
 	{
-		return [delegate panelView:self heightForRowAtIndexPath:[PanelIndexPath panelIndexPathForPage:self.pageNumber indexPath:indexPath]];
+		return [self.delegate panelView:self heightForRowAtIndexPath:[PanelIndexPath panelIndexPathForPage:self.pageNumber indexPath:indexPath]];
 	}
 	else return 0;
 }
 
 - (void)tableView:(UITableView *)tableView_ didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if ([delegate respondsToSelector:@selector(panelView:didSelectRowAtIndexPath:)])
+	if ([self.delegate respondsToSelector:@selector(panelView:didSelectRowAtIndexPath:)])
 	{
-		return [delegate panelView:self didSelectRowAtIndexPath:[PanelIndexPath panelIndexPathForPage:self.pageNumber indexPath:indexPath]];
+		return [self.delegate panelView:self didSelectRowAtIndexPath:[PanelIndexPath panelIndexPathForPage:self.pageNumber indexPath:indexPath]];
 	}
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView_ cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if ([delegate respondsToSelector:@selector(panelView:cellForRowAtIndexPath:)])
+	if ([self.delegate respondsToSelector:@selector(panelView:cellForRowAtIndexPath:)])
 	{
-		return [delegate panelView:self cellForRowAtIndexPath:[PanelIndexPath panelIndexPathForPage:self.pageNumber indexPath:indexPath]];
+		return [self.delegate panelView:self cellForRowAtIndexPath:[PanelIndexPath panelIndexPathForPage:self.pageNumber indexPath:indexPath]];
 	}
 	return nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView_ numberOfRowsInSection:(NSInteger)section
 {
-	if ([delegate respondsToSelector:@selector(panelView:numberOfRowsInPage:section:)])
+	if ([self.delegate respondsToSelector:@selector(panelView:numberOfRowsInPage:section:)])
 	{
-		return [delegate panelView:self numberOfRowsInPage:self.pageNumber section:section];
+		return [self.delegate panelView:self numberOfRowsInPage:self.pageNumber section:section];
 	}
 	return 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	if ([delegate respondsToSelector:@selector(panelView:numberOfSectionsInPage:)])
+	if ([self.delegate respondsToSelector:@selector(panelView:numberOfSectionsInPage:)])
 	{
-		return [delegate panelView:self numberOfSectionsInPage:self.pageNumber];
+		return [self.delegate panelView:self numberOfSectionsInPage:self.pageNumber];
 	}
 	return 1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-	if ([delegate respondsToSelector:@selector(panelView:titleForHeaderInPage:section:)])
+	if ([self.delegate respondsToSelector:@selector(panelView:titleForHeaderInPage:section:)])
 	{
-		return [delegate panelView:self titleForHeaderInPage:self.pageNumber section:section];
+		return [self.delegate panelView:self titleForHeaderInPage:self.pageNumber section:section];
 	}
 	return nil;
 }

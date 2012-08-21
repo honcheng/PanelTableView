@@ -9,13 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "PanelsViewController.h"
 
-@interface SamplePanelsViewController : PanelsViewController {
-	NSMutableArray *panelsArray;
-	UIBarButtonItem *editItem, *doneItem, *addRemoveItem;
-}
-
+@interface SamplePanelsViewController : PanelsViewController
 @property (nonatomic, strong) NSMutableArray *panelsArray;
-
+@property (nonatomic, strong) UIBarButtonItem *editItem, *doneItem, *addRemoveItem;
 - (void)addTemporaryUI;
 
 @end

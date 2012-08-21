@@ -35,27 +35,26 @@
 
 
 @implementation PanelIndexPath
-@synthesize page, section, row;
 
-- (id)initWithRow:(int)_row section:(int)_section page:(int)_page
+- (id)initWithRow:(int)row section:(int)section page:(int)page
 {
 	if (self = [super init])
 	{
-		self.row = _row;
-		self.section = _section;
-		self.page = _page;
+		_row = row;
+		_section = section;
+		_page = page;
 	}
 	return self;
 }
 
-+ (id)panelIndexPathForRow:(int)_row section:(int)_section page:(int)_page
++ (id)panelIndexPathForRow:(int)row section:(int)section page:(int)page
 {
-	return [[self alloc] initWithRow:_row section:_section page:_page];
+	return [[self alloc] initWithRow:row section:section page:page];
 }
 
-+ (id)panelIndexPathForPage:(int)_page indexPath:(NSIndexPath*)indexPath
++ (id)panelIndexPathForPage:(int)page indexPath:(NSIndexPath*)indexPath
 {
-	return [[self alloc] initWithRow:indexPath.row section:indexPath.section page:_page];
+	return [[self alloc] initWithRow:indexPath.row section:indexPath.section page:page];
 }
 
 @end

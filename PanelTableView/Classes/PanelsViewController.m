@@ -34,10 +34,10 @@
 #import "PanelsViewController.h"
 
 @implementation UIScrollViewExt
-@synthesize isEditing;
+
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
-	if (isEditing) return self;
+	if (self.isEditing) return self;
 	else return [super hitTest:point withEvent:event];
 }
 @end
@@ -51,7 +51,6 @@
 @end
 
 @implementation PanelsViewController
-@synthesize recycledPages, visiblePages;
 
 - (void)loadView
 {
@@ -67,8 +66,8 @@
 	[self.view addSubview:self.scrollView];
 	[_scrollView setContentSize:CGSizeMake(([self panelViewSize].width+2*GAP)*[self numberOfPanels],_scrollView.frame.size.height)];
 	
-	self.recycledPages = [NSMutableSet set];
-	self.visiblePages = [NSMutableSet set];
+	_recycledPages = [NSMutableSet set];
+	_visiblePages = [NSMutableSet set];
 	
 	[self tilePages];
 }
@@ -89,19 +88,19 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-	PanelView *panelView = [self panelViewAtPage:currentPage];
+	PanelView *panelView = [self panelViewAtPage:self.currentPage];
 	[panelView pageDidAppear];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-	PanelView *panelView = [self panelViewAtPage:currentPage];
+	PanelView *panelView = [self panelViewAtPage:self.currentPage];
 	[panelView pageWillAppear];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	PanelView *panelView = [self panelViewAtPage:currentPage];
+	PanelView *panelView = [self panelViewAtPage:self.currentPage];
 	[panelView pageWillDisappear];
 }
 
@@ -119,7 +118,7 @@
 
 - (void)setEditing:(BOOL)isEditing
 {
-	_isEditing = isEditing;
+	self.isEditing = isEditing;
 	
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
@@ -187,29 +186,29 @@
 
 - (void)removeCurrentPage
 {	
-	if (currentPage==[self numberOfPanels] && currentPage!=0)
+	if (self.currentPage==[self numberOfPanels] && self.currentPage!=0)
 	{
 		// this is the last page
 		//numberOfPages -= 1;
 		
-		PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+currentPage];
+		PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+self.currentPage];
 		[panelView showPanel:NO animated:YES];
-		[self removeContentOfPage:currentPage];
+		[self removeContentOfPage:self.currentPage];
 		
 		[panelView performSelector:@selector(showPreviousPanel) withObject:nil afterDelay:0.4];
 		[self performSelector:@selector(jumpToPreviousPage) withObject:nil afterDelay:0.6];
 	}
 	else if ([self numberOfPanels]==0)
 	{
-		PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+currentPage];
+		PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+self.currentPage];
 		[panelView showPanel:NO animated:YES];
-		[self removeContentOfPage:currentPage];
+		[self removeContentOfPage:self.currentPage];
 	}
 	else 
 	{
-		PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+currentPage];
+		PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+self.currentPage];
 		[panelView showPanel:NO animated:YES];
-		[self removeContentOfPage:currentPage];
+		[self removeContentOfPage:self.currentPage];
 		[self performSelector:@selector(pushNextPage) withObject:nil afterDelay:0.4];
 	}
 }
@@ -223,9 +222,9 @@
 {
 	[self.scrollView setContentSize:CGSizeMake(([self panelViewSize].width+2*GAP)*[self numberOfPanels],self.scrollView.frame.size.width)];
 	
-	for (int i=currentPage; i<[self numberOfVisiblePanels]; i++)
+	for (int i=self.currentPage; i<[self numberOfVisiblePanels]; i++)
 	{
-		if (currentPage < [self numberOfPanels])
+		if (self.currentPage < [self numberOfPanels])
 		{
 			PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+i];
 			[panelView showNextPanel];
@@ -244,7 +243,7 @@
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView_
 {
-	PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+currentPage];
+	PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+self.currentPage];
 	[panelView pageWillDisappear];
 }
 
@@ -257,13 +256,13 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView_
 {
 	
-	if (currentPage!=lastDisplayedPage)
+	if (self.currentPage!=self.lastDisplayedPage)
 	{
-		PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+currentPage];
+		PanelView *panelView = (PanelView*)[self.scrollView viewWithTag:TAG_PAGE+self.currentPage];
 		[panelView pageDidAppear];
 	}
 	
-	lastDisplayedPage = currentPage;
+	self.lastDisplayedPage = self.currentPage;
 }
 
 #pragma mark reuse table views
@@ -277,12 +276,12 @@
 	firstNeededPageIndex = MAX(firstNeededPageIndex,0);
 	lastNeededPageIndex = MIN(lastNeededPageIndex, [self numberOfPanels]-1) + [self numberOfVisiblePanels];
 	
-	if (_isEditing) firstNeededPageIndex -= 1;
+	if (self.isEditing) firstNeededPageIndex -= 1;
 	
 	if (firstNeededPageIndex<0) firstNeededPageIndex = 0;
 	if (lastNeededPageIndex>=[self numberOfPanels]) lastNeededPageIndex = [self numberOfPanels]-1;
 	
-	currentPage = firstNeededPageIndex;
+	self.currentPage = firstNeededPageIndex;
 	
 	for (PanelView *panel in self.visiblePages)
 	{
@@ -312,7 +311,7 @@
 
 			[self.scrollView addSubview:panel];
 			[self.visiblePages addObject:panel];
-			[panel shouldWiggle:_isEditing];
+			[panel shouldWiggle:self.isEditing];
 		}
 	}
 }
