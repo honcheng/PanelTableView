@@ -59,6 +59,7 @@
 	
 	CGRect frame = [self scrollViewFrame];
 	_scrollView = [[UIScrollViewExt alloc] initWithFrame:CGRectMake(-1*GAP,0,frame.size.width+2*GAP,frame.size.height)];
+	[_scrollView setScrollsToTop:NO];
 	[_scrollView setDelegate:self];
 	[_scrollView setShowsHorizontalScrollIndicator:NO];
 	[_scrollView setPagingEnabled:YES];
