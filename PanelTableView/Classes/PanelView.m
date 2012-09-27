@@ -49,6 +49,7 @@
 		[self addSubview:_tableView];
 		[_tableView setDelegate:self];
 		[_tableView setDataSource:self];
+		[_tableView setScrollsToTop:NO];
     }
     return self;
 }
@@ -87,10 +88,13 @@
 {
 	//NSLog(@"page did appear %i", pageNumber);
 	//[self showPanel:YES animated:YES];
+	[self.tableView setScrollsToTop:YES];
+
 }
 
 - (void)pageWillDisappear
 {
+	[self.tableView setScrollsToTop:NO];
 	[self saveTableviewOffset];
 }
 
